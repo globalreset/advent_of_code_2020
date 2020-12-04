@@ -29,36 +29,22 @@ end
 
 validCnt = 0
 passportList.each { |passport|
-  valid = ""
+  valid = 0
   validFields.keys.each { |expKey|
-    if(passport.key?(expKey))
-      valid = "#{valid}1"
-    else
-      valid = "#{valid}0"
-    end
+    valid = (valid<<1) + ((passport.key?(expKey))?1:0)
   }
-  validCnt += 1 if(valid=="11111110" || valid=="11111111")
+  validCnt += 1 if([0xff,0xfe].include?(valid))
 }
 
 puts "Part 1: valid passports = #{validCnt}"
 
 validCnt = 0
 passportList.each { |passport|
-  puts "--"
-  valid = ""
+  valid = 0
   validFields.keys.each { |expKey|
-    if(passport.key?(expKey))
-      if(passport[expKey] =~ /#{validFields[expKey]}/)
-        valid = "#{valid}1"
-      else
-        puts "INVALID: passport['#{expKey}'] => '#{passport[expKey]}'"
-        valid = "#{valid}0"
-      end
-    else
-      valid = "#{valid}0"
-    end
+    valid = (valid<<1) + ((passport.key?(expKey) && (passport[expKey] =~ /#{validFields[expKey]}/))?1:0)
   }
-  validCnt += 1 if(valid=="11111110" || valid=="11111111")
+  validCnt += 1 if([0xff,0xfe].include?(valid))
 }
 
 puts "Part 2: valid passports = #{validCnt}"
