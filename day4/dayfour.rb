@@ -6,7 +6,7 @@ validFields = {
   "hcl" => "^#[0-9a-f]{6}$", #(Hair Color)
   "ecl" => "^(amb|blu|brn|gry|grn|hzl|oth)$", #(Eye Color)
   "pid" => "^[0-9]{9}$", #(Passport ID)
-  "cid" => "^[^s]+$" #(Country ID)
+  "cid" => "^[^\s]+$" #(Country ID)
 }
 passportList = []
 passport = {}
