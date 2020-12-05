@@ -9,10 +9,8 @@ seatList = []
 IO.readlines("day5_input.txt").each { |line|
   row = 0
   col = 0
-  puts line
   if(line.size()>0)
      codes = line.scan(/\w/)
-     puts codes[0..6].inspect
      codes[0..6].each { |code| row = (row<<1) + seatBinValues[code] }
      codes[7..9].each { |code| col = (col<<1) + seatBinValues[code] }
      seatList.push (row*8 + col)
@@ -25,7 +23,7 @@ seatList.size.times { |i|
    if(i>=1)
      if(seatList[i]-2==seatList[i-1])
         puts "Part 2 answer: missing seatId = #{seatList[i]-1}"
+        exit
      end
   end
 }
-puts seatList.inspect
