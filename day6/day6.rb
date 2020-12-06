@@ -5,18 +5,18 @@ IO.readlines("day6_input.txt").each { |line|
   if(line.chomp=="")
     groupId += 1
   else
-    individualMask = 0;
-    line.scan(/\w/).each{ |q|
-      maskBit = q.ord - 'a'.ord
-      individualMask |= (1<<maskBit)
-    }
-    groupOrMask[groupId]  = (groupOrMask[groupId]  ||  0) | individualMask
-    groupAndMask[groupId] = (groupAndMask[groupId] || -1) & individualMask
+    mask = line.scan(/\w/)
+               .map { |q| q.ord - 'a'.ord} #convert letter to bit position
+               .inject(0) { |m,b| m |= (1<<b) } #create a bit mask
+    groupOrMask[groupId]  = (groupOrMask[groupId]  ||  0) | mask #accumulate ORs
+    groupAndMask[groupId] = (groupAndMask[groupId] || -1) & mask #accumulate ANDs
   end
 }
 
-sum = groupOrMask.values.collect{|mask| mask.to_s(2).scan(/1/).size}.inject(:+)
+countOnes = proc { |i| i.to_s(2).scan(/1/).size } #count num of bits set
+
+sum = groupOrMask.values.map(&countOnes).inject(:+)
 puts "Part 1: questions answered yes by each group = #{sum}"
 
-sum = groupAndMask.values.collect{|mask| mask.to_s(2).scan(/1/).size}.inject(:+)
-puts "Part 1: questions answered yes by every member of each group = #{sum}"
+sum = groupAndMask.values.map(&countOnes).inject(:+)
+puts "Part 2: questions answered yes by every member of each group = #{sum}"
