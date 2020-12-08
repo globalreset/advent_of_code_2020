@@ -5,9 +5,9 @@ program = IO.readlines("day8_input.txt")
 def executeProgram(program)
   acc = 0
   ptr = 0
-  ptrVisited = []
+  ptrs = {}
   while(ptr < program.size)
-    ptrVisited.push(ptr)
+    ptrs[ptr] = :dirty
     case(program[ptr][:op])
     when :nop
       ptr += 1
@@ -17,7 +17,7 @@ def executeProgram(program)
       acc += program[ptr][:arg]
       ptr += 1
     end
-    return false, acc if(ptrVisited.include?(ptr))
+    return false, acc if(ptrs[ptr]==:dirty)
   end
   return true, acc
 end
