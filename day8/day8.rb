@@ -1,43 +1,38 @@
-program = IO.readlines("day8_input.txt").map{ |line| line.split(" ") }
+program = IO.readlines("day8_input.txt")
+            .map{ |input| input.split(" ") }
+            .map{ |op,arg| {:op => op.to_sym, :arg => arg.to_i} }
 
 def executeProgram(program)
   acc = 0
-  line = 0
-  linesVisited=[]
-  while(line < program.size)
-    linesVisited.push(line)
-    case(program[line][0])
-    when "nop"
-      nextLine = line + 1
-    when "jmp"
-      nextLine = line + program[line][1].to_i
-    when "acc"
-      acc += program[line][1].to_i
-      nextLine = line + 1
+  ptr = 0
+  ptrVisited = []
+  while(ptr < program.size)
+    ptrVisited.push(ptr)
+    case(program[ptr][:op])
+    when :nop
+      ptr += 1
+    when :jmp
+      ptr += program[ptr][:arg]
+    when :acc
+      acc += program[ptr][:arg]
+      ptr += 1
     end
-    if(linesVisited.include?(nextLine))
-      raise "loop detected: acc=#{acc}, lastLine=#{line}, nextLine=#{nextLine}"
-    else
-      line = nextLine
-    end
+    return false, acc if(ptrVisited.include?(ptr))
   end
-  return acc
+  return true, acc
 end
 
-begin
-   executeProgram(program)
-rescue => error
-  puts "Part 1 answer: #{error.message}"
-end
+status, acc = executeProgram(program)
+puts "Part 1 answer: #{status}, acc=#{acc}"
 
-
-swapOp = ["jmp", "nop"]
-program.select { |op| swapOp.include?(op[0]) }.each { |op|
-  i = swapOp.find_index(op[0])
-  op[0] = swapOp[i ^ 1]
-  begin
-    puts "Part 2 answer: acc=#{executeProgram(program)}"
-  rescue => error
+swapOp = [:jmp, :nop]
+program.select { |p| swapOp.include?(p[:op]) }.each { |p|
+  i = swapOp.find_index(p[:op])
+  p[:op] = swapOp[i ^ 1]
+  status, acc = executeProgram(program)
+  p[:op] = swapOp[i]
+  if(status)
+     puts "Part 2 answer: #{status}, acc=#{acc}"
+     break
   end
-  op[0] = swapOp[i]
 }
