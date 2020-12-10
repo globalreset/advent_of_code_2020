@@ -8,12 +8,16 @@ joltages.reduce(0) { |r,a|
 }
 puts "Part 1 answer: #{diffs[1] * diffs[3]}"
 
-def searchJolts(devJolt, highJolt, joltList, cache)
-  return (devJolt==highJolt) ? 1 :
-    joltList.select{ |jolt| ((highJolt+1)..(highJolt+3)).include?(jolt) }
-           .reduce(0){ |cnt, jolt|
-      cnt += cache[jolt] || (cache[jolt] = searchJolts(devJolt, jolt, joltList, cache))
+def searchJolts(highJolt, joltList, cache)
+    return joltList.select { |jolt|
+      ((highJolt+1)..(highJolt+3)).include?(jolt)
+    }.reduce(0) { |cnt, jolt|
+      if(jolt == joltList[-1])
+        cnt += 1
+      else
+        cnt += cache[jolt] || (cache[jolt] = searchJolts(jolt, joltList, cache))
+      end
     }
 end
 
-puts "Part 2 answer: #{searchJolts(joltages[-1], 0, joltages, {})}"
+puts "Part 2 answer: #{searchJolts(0, joltages, {})}"
